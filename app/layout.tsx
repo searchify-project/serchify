@@ -27,3 +27,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     </html>
   );
 }
+export const metadata = {
+  title: "Serchify - Study Materials Hub",
+  description: "Decentralized study material platform",
+  manifest: "/manifest.json",
+};
