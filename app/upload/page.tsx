@@ -149,7 +149,6 @@ export default function UploadPage() {
             <input 
               type="text" 
               required
-              value[cite: 9]
               value={subject} 
               onChange={(e) => setSubject(e.target.value)}
               placeholder="e.g. Data Structures, DBMS, Software Eng."
