@@ -1,11 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase"; // Centralized client import
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
 export default function UploadPage() {
   const [title, setTitle] = useState("");
   const [semester, setSemester] = useState("Semester 1");
@@ -58,16 +55,16 @@ export default function UploadPage() {
 
       // 4. Database mein record save karo (with material_type)
       const { error: dbError } = await supabase.from("materials").insert([
-  {
-    title,
-    semester,
-    subject,
-    material_type: materialType,
-    file_url: fileUrl,
-    user_id: user.id,
-    status: "pending", // <-- Yahan pending kar do
-  },
-]);
+        {
+          title,
+          semester,
+          subject,
+          material_type: materialType,
+          file_url: fileUrl,
+          user_id: user.id,
+          status: "pending",
+        },
+      ]);
 
       if (dbError) throw dbError;
 
@@ -152,6 +149,7 @@ export default function UploadPage() {
             <input 
               type="text" 
               required
+              value[cite: 9]
               value={subject} 
               onChange={(e) => setSubject(e.target.value)}
               placeholder="e.g. Data Structures, DBMS, Software Eng."

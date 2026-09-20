@@ -1,16 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from "@/lib/supabase"; // Centralized client import
 
 // Aapka official Admin email
 const ADMIN_EMAIL = "atul114p@gmail.com";
-
 
 export default function AdminPage() {
   const [materials, setMaterials] = useState<any[]>([]);

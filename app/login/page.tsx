@@ -1,13 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
+import { supabase } from "@/lib/supabase"; // Centralized client import
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,7 +10,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Agar user pehle se logged-in hai, toh use dubara login page mat dikhao, seedha home ya profile bhej do
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
@@ -46,7 +39,6 @@ export default function LoginPage() {
     setLoading(false);
   };
 
-  // Google OAuth Login
   const handleGoogleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -59,7 +51,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Glow */}
       <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -74,7 +65,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Google Login Button */}
         <button
           onClick={handleGoogleLogin}
           className="w-full py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-medium flex items-center justify-center gap-3 transition-all text-sm mb-6 shadow-md"

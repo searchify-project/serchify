@@ -1,12 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from "@/lib/supabase"; // Centralized client import
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
@@ -23,17 +18,16 @@ export default function ProfilePage() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-      router.push("/login"); // Agar logged in nahi hai toh login page bhej do
+      router.push("/login");
       return;
     }
 
     setUser(session.user);
 
-    // User ke apne upload kiye hue materials fetch karo
     const { data, error } = await supabase
       .from("materials")
       .select("*")
-      .eq("user_id", session.user.id) // Sirf current user ke materials
+      .eq("user_id", session.user.id)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -68,13 +62,10 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-6 relative overflow-x-hidden">
-      
-      {/* Background Glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="max-w-4xl mx-auto">
         
-        {/* Header */}
         <div className="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
           <a href="/" className="text-sm text-slate-400 hover:text-white transition-colors">
             ← Back to Home
@@ -90,7 +81,6 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* User Card */}
         <div className="bg-slate-900/90 backdrop-blur-md p-6 rounded-2xl border border-slate-800 shadow-xl mb-8 flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-red-600 p-0.5 flex items-center justify-center shadow-lg">
             <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-xl font-black text-blue-400">
@@ -104,7 +94,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* My Uploaded Materials Section */}
         <div className="mb-6 flex justify-between items-center">
           <h2 className="text-lg font-bold text-slate-200">My Uploaded Materials</h2>
           <a 
@@ -131,7 +120,7 @@ export default function ProfilePage() {
                     <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full border ${
                       mat.status === 'approved' 
                         ? 'bg-green-500/10 text-green-400 border-green-500/20' 
-                        : 'yellow-500 bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                        : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                     }`}>
                       {mat.status ? mat.status.toUpperCase() : 'PENDING'}
                     </span>

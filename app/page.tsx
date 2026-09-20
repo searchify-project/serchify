@@ -1,12 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from "@/lib/supabase"; // Centralized client import
 
 export default function Home() {
   const [materials, setMaterials] = useState<any[]>([]);
@@ -25,7 +20,6 @@ export default function Home() {
 
   const fetchMaterials = async () => {
     setLoading(true);
-    // Home page par sirf 'approved' materials dikhenge
     const { data, error } = await supabase
       .from("materials")
       .select("*")
@@ -43,12 +37,10 @@ export default function Home() {
     if (session) {
       setUser(session.user);
       
-      // Direct hardcoded safety check for your email + Database check
       if (session.user.email === "atul114p@gmail.com") {
         setIsAdmin(true);
       }
 
-      // Database ke profiles table se role check karo
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("role")
@@ -78,16 +70,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-red-500 selection:text-white overflow-x-hidden relative">
-      
-      {/* Background Red & Blue Glow Effect */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-600/15 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
 
       {/* --- INITIAL LANDING / SPLASH STATE --- */}
       <div className={`min-h-screen flex flex-col items-center justify-center p-6 text-center absolute inset-0 transition-all duration-500 ease-in-out ${isSearching ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 scale-100 z-20'}`}>
         <div className="space-y-6 max-w-md w-full">
-          
-          {/* Center Logo with Search Icon */}
           <div className="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-tr from-blue-600 to-red-600 p-0.5 shadow-2xl shadow-blue-500/20 flex items-center justify-center transform transition-transform hover:scale-105 duration-300">
             <div className="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center">
               <svg className="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +91,6 @@ export default function Home() {
             <p className="text-slate-400 text-sm mt-2">Your open-source decentralized study hub</p>
           </div>
 
-          {/* Search Anything Button */}
           <div className="pt-4">
             <button
               onClick={() => setIsSearching(true)}
@@ -115,14 +102,11 @@ export default function Home() {
               Search anything...
             </button>
           </div>
-
         </div>
       </div>
 
       {/* --- MAIN SEARCH & DASHBOARD STATE --- */}
       <div className={`max-w-5xl mx-auto px-4 py-8 transition-all duration-500 ease-in-out ${!isSearching ? 'opacity-0 pointer-events-none scale-105 absolute inset-0' : 'opacity-100 scale-100 relative z-10'}`}>
-        
-        {/* Header with Logo + Name and 3-Lines Hamburger Menu */}
         <header className="flex justify-between items-center mb-8 border-b border-slate-800/80 pb-4 relative">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setIsSearching(false)}>
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-red-600 p-0.5 flex items-center justify-center shadow-md transition-transform group-hover:scale-105">
@@ -138,14 +122,10 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <a 
-              href="/upload" 
-              className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm"
-            >
+            <a href="/upload" className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm">
               + Upload
             </a>
 
-            {/* 3-Lines Hamburger Button */}
             <button 
               onClick={() => setMenuOpen(!menuOpen)}
               className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 flex flex-col items-center justify-center gap-1.5 shadow-md transition-all text-slate-200 focus:outline-none"
@@ -164,20 +144,15 @@ export default function Home() {
             onClick={(e) => e.stopPropagation()}
           >
             <div>
-              {/* Drawer Header */}
               <div className="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
                 <h2 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-red-500 bg-clip-text text-transparent">
                   Navigation Menu
                 </h2>
-                <button 
-                  onClick={() => setMenuOpen(false)}
-                  className="text-slate-400 hover:text-white p-2 rounded-lg bg-slate-950 border border-slate-800 text-xs"
-                >
+                <button onClick={() => setMenuOpen(false)} className="text-slate-400 hover:text-white p-2 rounded-lg bg-slate-950 border border-slate-800 text-xs">
                   ✕ Close
                 </button>
               </div>
 
-              {/* User Quick Info Box */}
               <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-6">
                 <p className="text-xs text-slate-400">Logged in as:</p>
                 <p className="text-sm font-semibold text-slate-200 truncate mt-1">
@@ -190,36 +165,23 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Menu Links */}
               <div className="space-y-3">
-                <button 
-                  onClick={handleProfileClick}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 text-slate-200 text-sm font-medium transition-all text-left"
-                >
+                <button onClick={handleProfileClick} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 text-slate-200 text-sm font-medium transition-all text-left">
                   <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   {user ? "View Profile" : "Login / Register"}
                 </button>
 
-                <a 
-                  href="/upload" 
-                  onClick={() => setMenuOpen(false)}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 text-slate-200 text-sm font-medium transition-all"
-                >
+                <a href="/upload" onClick={() => setMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 text-slate-200 text-sm font-medium transition-all">
                   <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
                   Upload Material
                 </a>
 
-                {/* CONDITIONAL ADMIN PANEL LINK: Sirf Admin ko dikhega */}
                 {isAdmin && (
-                  <a 
-                    href="/admin" 
-                    onClick={() => setMenuOpen(false)}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600/20 to-red-600/20 hover:from-blue-600/30 hover:to-red-600/30 border border-red-500/30 text-red-300 text-sm font-semibold transition-all shadow-md"
-                  >
+                  <a href="/admin" onClick={() => setMenuOpen(false)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600/20 to-red-600/20 hover:from-blue-600/30 hover:to-red-600/30 border border-red-500/30 text-red-300 text-sm font-semibold transition-all shadow-md">
                     <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
@@ -229,7 +191,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Footer inside drawer */}
             <div className="pt-4 border-t border-slate-800 text-center text-xs text-slate-500">
               Searchify Hub • v1.0 PWA
             </div>
@@ -264,10 +225,7 @@ export default function Home() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
             {filteredMaterials.map((mat) => (
-              <div 
-                key={mat.id} 
-                className="bg-slate-900/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-slate-800 hover:border-slate-700 transition-all group flex flex-col justify-between"
-              >
+              <div key={mat.id} className="bg-slate-900/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-slate-800 hover:border-slate-700 transition-all group flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2">
@@ -306,7 +264,6 @@ export default function Home() {
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
