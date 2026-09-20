@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase"; // Centralized client import
 
 // Aapka official Admin email
-const ADMIN_EMAIL = "atul114p@gmail.com";
+const ADMIN_EMAIL = "bcawebofficial@gmail.com";
 
 export default function AdminPage() {
   const [materials, setMaterials] = useState<any[]>([]);

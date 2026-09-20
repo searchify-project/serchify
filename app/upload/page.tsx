@@ -117,12 +117,8 @@ export default function UploadPage() {
                 onChange={(e) => setSemester(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-blue-500 text-sm"
               >
-                <option value="Semester 1">Semester 1</option>
-                <option value="Semester 2">Semester 2</option>
                 <option value="Semester 3">Semester 3</option>
-                <option value="Semester 4">Semester 4</option>
-                <option value="Semester 5">Semester 5</option>
-                <option value="Semester 6">Semester 6</option>
+                <option value="Semester 4">Coming Soon..</option>
               </select>
             </div>
 
